@@ -1,12 +1,22 @@
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import vueJsx from '@vitejs/plugin-vue-jsx'
-import path from 'path'
+import path from 'node:path'
 import frappeui from 'frappe-ui/vite'
 import { VitePWA } from 'vite-plugin-pwa'
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  // Allow resolving files in both frontend and the top-level sites folder
+  server: {
+    fs: {
+      allow: [
+        path.resolve(__dirname, 'frontend'),
+        path.resolve(__dirname, 'sites')
+      ]
+    }
+  },
+
   plugins: [
     frappeui({
       frappeProxy: true,
@@ -63,8 +73,11 @@ export default defineConfig({
   ],
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, 'src'),
-    },
+      // existing frontend alias
+      '@': path.resolve(__dirname, 'frontend/src'),
+      // alias for shared JSON config
+      '@site-config': path.resolve(__dirname, 'sites/common_site_config.json')
+    }
   },
   optimizeDeps: {
     include: [
